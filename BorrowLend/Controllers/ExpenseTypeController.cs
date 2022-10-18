@@ -1,53 +1,38 @@
 ﻿using BorrowLend.Data;
 using BorrowLend.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data.Entity.Migrations;
 
 
 namespace BorrowLend.Controllers
 {
-    public class ExpenseController:Controller
+    public class ExpenseTypeController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
         public IActionResult Index()
         {
-            IEnumerable<Expense> obj = db.Expenses;    
-            return View(obj);
+
+            return View(db.ExpensesType);
         }
         public IActionResult Create()
         {
-            ExpenseVM expenseVM = new ExpenseVM
-            {
-                Expense = new Expense(),
-                typeDropDown = db.ExpensesType.Select(i => new SelectListItem
-                {
-                    Text = i.ExpenseTypeName,
-                    Value = i.Id.ToString()
-                })
-            };
-            return View(expenseVM);
+            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ExpenseVM expenseVM)
+        public IActionResult Create(ExpenseType expenseType)
         {
-            expenseVM.typeDropDown = db.ExpensesType.Select(i => new SelectListItem
-            {
-                Text = i.ExpenseTypeName,
-                Value = i.Id.ToString()
-            });
             if (ModelState.IsValid)
             {
-                db.Expenses.Add(expenseVM.Expense);
+                db.ExpensesType.Add(expenseType);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(expenseVM);
+            return View(expenseType);
         }
         public IActionResult Update(int? id)
         {
-            var obj = db.Items.Find(id);
+            var obj = db.ExpensesType.Find(id);
             if (obj == null)
             {
                 return NotFound();
@@ -56,19 +41,19 @@ namespace BorrowLend.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(ExpenseVM expenseVM)
+        public IActionResult Update(ExpenseType obj)
         {
-            if (expenseVM == null)
+            if (obj == null)
             {
                 return NotFound();
             }
-            db.Expenses.AddOrUpdate();
+            db.ExpensesType.AddOrUpdate();
             db.SaveChanges();
             return RedirectToAction("Index");
         }
         public IActionResult Delete(int? id)
         {
-            var obj = db.Items.Find(id);
+            var obj = db.ExpensesType.Find(id);
             if (obj == null)
             {
                 return NotFound();
@@ -77,13 +62,13 @@ namespace BorrowLend.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Item obj)
+        public IActionResult Delete(ExpenseType obj)
         {
             if (obj == null)
             {
                 return NotFound();
             }
-            db.Items.Remove(db.Items.Find(obj.Id));
+            db.ExpensesType.Remove(db.ExpensesType.Find(obj.Id));
             db.SaveChanges();
             return RedirectToAction("Index");
         }
