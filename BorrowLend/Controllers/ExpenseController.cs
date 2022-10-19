@@ -32,58 +32,68 @@ namespace BorrowLend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ExpenseVM expenseVM)
         {
-            expenseVM.typeDropDown = db.ExpensesType.Select(i => new SelectListItem
-            {
-                Text = i.ExpenseTypeName,
-                Value = i.Id.ToString()
-            });
-            if (ModelState.IsValid)
-            {
+            
+           
                 db.Expenses.Add(expenseVM.Expense);
                 db.SaveChanges();
                 return RedirectToAction("Index");
-            }
-            return View(expenseVM);
+            
+           
         }
         public IActionResult Update(int? id)
         {
-            var obj = db.Items.Find(id);
+            var obj = db.Expenses.Find(id);
             if (obj == null)
             {
                 return NotFound();
             }
-            return View(obj);
+            ExpenseVM item = new ExpenseVM();
+            item.Expense = obj;
+            item.typeDropDown = db.ExpensesType.Select(i => new SelectListItem
+            {
+                Text = i.ExpenseTypeName,
+                Value = i.Id.ToString()
+            });
+            return View(item);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(ExpenseVM expenseVM)
+        public IActionResult Update(Expense expense)
         {
-            if (expenseVM == null)
+            if (expense == null)
             {
                 return NotFound();
             }
-            db.Expenses.AddOrUpdate();
+           
+            db.Expenses.AddOrUpdate(expense);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
         public IActionResult Delete(int? id)
         {
-            var obj = db.Items.Find(id);
+            var obj = db.Expenses.Find(id);
             if (obj == null)
             {
                 return NotFound();
             }
-            return View(obj);
+            ExpenseVM item = new ExpenseVM();
+            item.Expense = obj;
+            item.typeDropDown = db.ExpensesType.Select(i => new SelectListItem
+            {
+                Text = i.ExpenseTypeName,
+                Value = i.Id.ToString()
+            });
+            return View(item);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Item obj)
+        public IActionResult Delete(ExpenseVM obj)
         {
             if (obj == null)
             {
                 return NotFound();
             }
-            db.Items.Remove(db.Items.Find(obj.Id));
+            db.Expenses.Remove(db.Expenses.Find(obj.Expense.Id));
             db.SaveChanges();
             return RedirectToAction("Index");
         }
