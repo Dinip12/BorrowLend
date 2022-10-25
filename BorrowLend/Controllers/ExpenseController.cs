@@ -2,8 +2,7 @@
 using BorrowLend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Data.Entity.Migrations;
-
+using System.Data.Entity;
 
 namespace BorrowLend.Controllers
 {
@@ -48,8 +47,6 @@ namespace BorrowLend.Controllers
                 return NotFound();
             }
             ExpenseVM item = new ExpenseVM();
-            item.Expense = obj;
-            item.typeDropDown = db.ExpensesType.Select(i => new SelectListItem
             {
                 Text = i.ExpenseTypeName,
                 Value = i.Id.ToString()
